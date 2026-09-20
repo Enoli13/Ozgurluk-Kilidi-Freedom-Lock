@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rootLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#121212"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <!-- AYARLAR MODU (Kilit kapalıyken görünecek alan) -->
+    <ScrollView
+        android:id="@+id/layoutSettings"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:gravity="center"
+                android:text="Zamanlayıcı Beklemede"
+                android:textColor="#4CAF50"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/btnOverlayPermission"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginBottom="8dp"
+                android:backgroundTint="#FF9800"
+                android:text="1. Üstte Gösterim İzni Ver" />
+
+            <Button
+                android:id="@+id/btnAccessibilityPermission"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginBottom="24dp"
+                android:backgroundTint="#FF9800"
+                android:text="2. Erişilebilirlik İzni Ver" />
+
+            <Button
+                android:id="@+id/btnSelectApps"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:layout_marginBottom="16dp"
+                android:backgroundTint="#009688"
+                android:text="Detoks Dışı Uygulamaları Seç (Max 6)" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btnStartTime"
+                    android:layout_width="0dp"
+                    android:layout_height="55dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="#333333"
+                    android:text="Başlangıç: --:--" />
+
+                <Button
+                    android:id="@+id/btnEndTime"
+                    android:layout_width="0dp"
+                    android:layout_height="55dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="#333333"
+                    android:text="Bitiş: --:--" />
+            </LinearLayout>
+
+            <HorizontalScrollView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:scrollbars="none">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ToggleButton
+                        android:id="@+id/btnMon"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_margin="2dp"
+                        android:backgroundTint="@color/day_toggle_tint"
+                        android:textOff="Pz"
+                        android:textOn="Pz" />
+
+                    <ToggleButton
+                        android:id="@+id/btnTue"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_margin="2dp"
+                        android:backgroundTint="@color/day_toggle_tint"
+                        android:textOff="Sa"
+                        android:textOn="Sa" />
+
+                    <ToggleButton
+                        android:id="@+id/btnWed"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_margin="2dp"
+                        android:backgroundTint="@color/day_toggle_tint"
+                        android:textOff="Ça"
+                        android:textOn="Ça" />
+
+                    <ToggleButton
+                        android:id="@+id/btnThu"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_margin="2dp"
+                        android:backgroundTint="@color/day_toggle_tint"
+                        android:textOff="Pe"
+                        android:textOn="Pe" />
+
+                    <ToggleButton
+                        android:id="@+id/btnFri"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_margin="2dp"
+                        android:backgroundTint="@color/day_toggle_tint"
+                        android:textOff="Cu"
+                        android:textOn="Cu" />
+
+                    <ToggleButton
+                        android:id="@+id/btnSat"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_margin="2dp"
+                        android:backgroundTint="@color/day_toggle_tint"
+                        android:textOff="Ct"
+                        android:textOn="Ct" />
+
+                    <ToggleButton
+                        android:id="@+id/btnSun"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_margin="2dp"
+                        android:backgroundTint="@color/day_toggle_tint"
+                        android:textOff="Pa"
+                        android:textOn="Pa" />
+                </LinearLayout>
+            </HorizontalScrollView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:text="Hiçbir gün seçilmezse kilit her gün çalışır."
+                android:textColor="#9E9E9E"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/btnLock"
+                android:layout_width="match_parent"
+                android:layout_height="65dp"
+                android:backgroundTint="#E53935"
+                android:text="ZAMANLAYICIYI AKTİF ET"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- ODAKLANMA MODU (Kilit aktif olduğunda görünecek panel; küçük ekranlarda kaydırılabilir) -->
+    <ScrollView
+        android:id="@+id/layoutLockContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvCountdownLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:textColor="#9E9E9E"
+                android:textSize="14sp" />
+
+            <FrameLayout
+                android:layout_width="260dp"
+                android:layout_height="120dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="24dp"
+                android:background="@drawable/bg_countdown"
+                android:padding="8dp">
+
+                <TextView
+                    android:id="@+id/tvCountdown"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:fontFamily="monospace"
+                    android:gravity="center"
+                    android:text="00:00:00"
+                    android:textColor="#E53935"
+                    android:textSize="42sp"
+                    android:textStyle="bold" />
+            </FrameLayout>
+
+            <!-- Özlü söz alanı -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="32dp"
+                android:background="@drawable/bg_quote"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <TextView
+                    android:id="@+id/tvQuote"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textColor="#121212"
+                    android:textSize="18sp" />
+            </LinearLayout>
+
+            <!-- İzin verilen (en fazla 6) uygulamalar -->
+            <GridView
+                android:id="@+id/gvAllowedApps"
+                android:layout_width="match_parent"
+                android:layout_height="240dp"
+                android:layout_marginBottom="32dp"
+                android:gravity="center"
+                android:horizontalSpacing="16dp"
+                android:numColumns="3"
+                android:stretchMode="columnWidth"
+                android:verticalSpacing="16dp" />
+
+            <Button
+                android:id="@+id/btnUnlock"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="#555555"
+                android:text="Zamanlayıcıyı Durdur"
+                android:textSize="12sp" />
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

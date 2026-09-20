@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Özgürlük Kilidi</string>
+    <string name="accessibility_desc">Özgürlük Kilidi, odak saatlerinde yalnızca hangi uygulamanın açıldığını (paket adını) görür. İzin verilmeyen bir uygulama açılırsa seni Özgürlük Kilidi ekranına geri yönlendirir. Ekrandaki yazıları, yazdıklarını veya kişisel verilerini okumaz, kaydetmez ve hiçbir yere göndermez.</string>
+    <string name="accessibility_disclosure_title">Erişilebilirlik izni neden gerekli?</string>
+    <string name="accessibility_disclosure_body">Özgürlük Kilidi, odak saatlerinde izin vermediğin bir uygulama açıldığında bunu fark edip seni bu ekrana geri getirmek için Erişilebilirlik servisini kullanır.\n\nServis yalnızca açılan uygulamanın paket adını görür. Ekran içeriğini, yazdıklarını veya kişisel verilerini okumaz, kaydetmez ve internete göndermez.\n\nDevam edersen Erişilebilirlik ayarları açılacak; oradan \"Özgürlük Kilidi\" servisini açman gerekir.</string>
+</resources>
