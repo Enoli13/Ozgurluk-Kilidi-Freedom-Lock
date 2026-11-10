@@ -6,15 +6,15 @@
 
 # 🇹🇷 Türkçe
 
-Özgürlük Kilidi, dijital detoks ve odaklanma için geliştirilmiş bir Android uygulamasıdır. Belirlediğin saat aralığında telefonda yalnızca önceden seçtiğin **en fazla 6 uygulama** kullanılabilir. Başka bir uygulamayı açmaya çalışırsan uygulama seni kilit ekranına geri gönderir.
+Özgürlük Kilidi, dijital detoks ve odaklanma için geliştirilmiş bir Android uygulamasıdır. Belirlediğin saat aralığında telefonda yalnızca önceden seçtiğin **serbest uygulamalar** kullanılabilir. Başka bir uygulamayı açmaya çalışırsan uygulama seni kilit ekranına geri gönderir.
 
 ## ✨ Özellikler
 
-- **Serbest uygulamalar:** Telefondaki uygulamalar otomatik taranır, kilit sırasında açık kalacak en fazla 6 tanesini listeden seçersin. Kilit ekranında bu uygulamalar bir ikon ızgarası (grid) olarak görünür ve tüm özellikleriyle kullanılabilir (klavye, dosya/fotoğraf seçici, izin pencereleri dahil).
-- **Akıllı zamanlayıcı:** Başlangıç ve bitiş saatini, ayrıca haftanın hangi günlerinde çalışacağını seçersin. Gün seçmezsen kilit her gün çalışır. Gece yarısını aşan aralıklar (örneğin 22:00 – 02:00) desteklenir.
+- **Serbest uygulamalar:** Telefondaki uygulamalar otomatik taranır, kilit sırasında açık kalacakları listeden seçersin; kaç tane olacağına sen karar verirsin. Sosyal medya uygulamaları (WhatsApp hariç) ve Ayarlar serbest listeye eklenemez. Kilit ekranında bu uygulamalar bir ikon ızgarası (grid) olarak görünür ve tüm özellikleriyle kullanılabilir (klavye, dosya/fotoğraf seçici, izin pencereleri dahil).
+- **Akıllı zamanlayıcı:** Başlangıç ve bitiş saatini, ayrıca haftanın hangi günlerinde çalışacağını seçersin. Saat aralığı ve en az bir gün seçmek zorunludur. Gece yarısını aşan aralıklar (örneğin 22:00 – 02:00) desteklenir.
 - **Geri sayım:** Kilit sırasında bitişe kalan süre ve ilerleme çubuğu görünür. Süre dolunca kilit ekranı kapanır ve engelleme kendiliğinden durur.
 - **Motivasyon kartı:** Kilit ekranında rastgele bir özlü söz gösterilir; dokununca değişir (yalnızca Türkçe).
-- **Güvenlik şifresi:** Zamanlayıcıyı süre dolmadan durdurmak için uygulama içinde belirlediğin şifreyi girmen gerekir. Hatalı denemeler sınırlıdır.
+- **Takvim (isteğe bağlı):** "Şu güne kadar" seçeneğinde takvimden bir tarih seçersin ve o gün bitene kadar zamanlayıcı hiçbir şekilde kapatılamaz. "Şu günlerde" seçeneğinde tarihleri tek tek eklersin ve o günlerde zamanlayıcı kapatılamaz. Bu günlerde Ayarlar ve uygulama kaldırma ekranı da açılamaz. Takvim seçilmezse zamanlayıcı bir onayla durdurulabilir.
 - **Anında devreye girer:** Kilit saati başladığında yasaklı bir uygulama zaten açıksa birkaç saniye içinde kilit ekranına geçilir.
 - **Durum takibi:** İzinlerin verilip verilmediği ve Erişilebilirlik servisi kapanırsa kilidin çalışmadığı ana ekranda gösterilir.
 - **Kalıcı ayarlar:** Saatler, günler ve seçilen uygulamalar telefon yeniden başlasa bile kaybolmaz.
@@ -56,11 +56,15 @@ Ardından **Build → Build Bundle(s) / APK(s) → Build APK(s)** ile `app-debug
 
 APK `app/build/outputs/apk/debug/` klasöründe oluşur. Dosyayı telefonuna aktarıp kur.
 
-### 2. Şifre
+### 2. Takvim (isteğe bağlı)
 
-Kilidi erken durdurmak için kullanılan şifre artık kaynak kodda **değil**. Zamanlayıcıyı ilk kez aktif ederken uygulama senden bir şifre belirlemeni ister; şifre telefonda yalnızca tuzlu SHA-256 özeti olarak saklanır. Zamanlayıcı kapalıyken **Kilit şifresini değiştir** düğmesiyle değiştirebilirsin.
+Zamanlayıcıyı kapatılamaz yapmak için **4 · Takvim** kartından seçim yap:
 
-Erken durdurmak 4 aşamalıdır ("Emin misin?" → "Gerçekten emin misin?" → "Ya düşündüm de, son kararın mı?" → "Tamam, bak bu son ekran.") ve her aşamada şifre yeniden istenir. Yanlış şifre süreci baştan başlatır; art arda 3 hatalı denemeden sonra 30 saniye beklemen gerekir.
+- **Yok:** Zamanlayıcı bir onayla durdurulabilir.
+- **Şu güne kadar:** Seçtiğin tarih (o gün dahil) bitene kadar zamanlayıcı kapatılamaz, ayarlar değiştirilemez.
+- **Şu günlerde:** Eklediğin her tarihte zamanlayıcı kapatılamaz.
+
+Kapatılamaz günlerde kilit saatleri dışında da Ayarlar ve uygulama kaldırma ekranı açılmaz; böylece Erişilebilirlik servisi kapatılarak ya da uygulama silinerek kilit aşılamaz.
 
 ### 3. İzinleri ver
 
@@ -75,9 +79,9 @@ Uygulamayı açınca iki izin gerekir:
 
 ### 4. Kullan
 
-1. **Uygulamaları seç** düğmesiyle en fazla 6 uygulama seç ve kaydet.
-2. Başlangıç ve bitiş saatini, istersen günleri seç.
-3. **ZAMANLAYICIYI AKTİF ET** düğmesine bas. İlk seferde bir kilit şifresi belirlemen istenir.
+1. **Uygulamaları seç** düğmesiyle serbest kalacak uygulamaları seç ve kaydet.
+2. Başlangıç ve bitiş saatini ve en az bir günü seç (zorunlu). İstersen takvimden kapatılamaz günleri belirle.
+3. **ZAMANLAYICIYI AKTİF ET** düğmesine bas ve özeti onayla.
 
 Zamanlayıcı kuruluyken uygulamayı açarsan bir sonraki kilide kalan süreyi görürsün. Kilit saati gelince seçilmemiş bir uygulamayı açtığın anda kilit ekranı devreye girer.
 
@@ -94,29 +98,29 @@ Buradaki paket adını `AppBlockerService.kt` dosyasındaki `ALWAYS_ALLOWED` lis
 
 ## ⚠️ Sınırlar
 
-Özgürlük Kilidi bir **öz disiplin aracıdır**, güvenlik duvarı değildir. Uygulamayı kaldırmak, Erişilebilirlik servisini kapatmak ya da telefonu yeniden başlatıp güvenli moda almak kilidi aşar. Amaç seni engellemek değil, dikkatini dağıtan uygulamaya uzanma anında bir duraklama yaratmaktır.
+Özgürlük Kilidi bir **öz disiplin aracıdır**, güvenlik duvarı değildir. Takvim seçilmemişse uygulamayı kaldırmak ya da Erişilebilirlik servisini kapatmak kilidi aşar. Takvimli günlerde bile telefonu güvenli modda başlatmak ya da telefonun tarihini elle değiştirmek kilidi aşabilir. Amaç seni engellemek değil, dikkatini dağıtan uygulamaya uzanma anında bir duraklama yaratmaktır.
 
 ## 📁 Proje yapısı
 
 | Dosya | Görevi |
 |---|---|
-| `MainActivity.kt` | Ayar ve kilit ekranı, grid, geri sayım, şifre pencereleri |
+| `MainActivity.kt` | Ayar ve kilit ekranı, uygulama ızgarası, geri sayım, takvim |
 | `AppBlockerService.kt` | Erişilebilirlik servisi; izinsiz uygulamayı fark edip kilit ekranını öne getirir |
-| `LockSettings.kt` | Kalıcı ayarlar, şifre özeti ve zaman penceresi hesapları |
+| `LockSettings.kt` | Kalıcı ayarlar, takvim ve zaman penceresi hesapları |
 
 ---
 
 # 🇬🇧 English
 
-Freedom Lock is an Android app for digital detox and focus. During the time window you set, only the **up to 6 apps** you pre-selected can be used. If you try to open anything else, the app sends you back to the lock screen.
+Freedom Lock is an Android app for digital detox and focus. During the time window you set, only the **allowed apps** you pre-selected can be used. If you try to open anything else, the app sends you back to the lock screen.
 
 ## ✨ Features
 
-- **Allowed apps:** The app scans your installed apps and lets you pick up to 6 to stay available during the lock. They appear as an icon grid on the lock screen and work with all their features (keyboard, file/photo pickers and permission dialogs included).
-- **Smart scheduler:** Choose a start time, an end time, and the days of the week it should run. If no day is selected, it runs every day. Windows that cross midnight (e.g. 22:00 – 02:00) are supported.
+- **Allowed apps:** The app scans your installed apps and lets you pick which ones stay available during the lock; you decide how many. Social media apps (except WhatsApp) and Settings can't be allowed. They appear as an icon grid on the lock screen and work with all their features (keyboard, file/photo pickers and permission dialogs included).
+- **Smart scheduler:** Choose a start time, an end time, and the days of the week it should run. A time range and at least one day are required. Windows that cross midnight (e.g. 22:00 – 02:00) are supported.
 - **Countdown:** The remaining time and a progress bar are shown during the lock. When it hits zero, the lock screen closes and blocking stops automatically.
 - **Motivation card:** A random quote is shown on the lock screen; tap it for another one (Turkish only).
-- **Security password:** The password you set in the app is required to stop the timer early. Wrong attempts are rate-limited.
+- **Calendar (optional):** With "Şu güne kadar" (until a date) you pick a date and the timer can't be turned off until that day ends. With "Şu günlerde" (on these days) you add dates one by one and the timer can't be turned off on those days. Settings and the uninstall screen are blocked on those days too. Without a calendar, the timer can be stopped after a confirmation.
 - **Kicks in immediately:** If a blocked app is already open when the lock starts, you're moved to the lock screen within a few seconds.
 - **Status at a glance:** The home screen shows which permissions are granted and warns you if the Accessibility service was turned off.
 - **Persistent settings:** Times, days and selected apps survive a phone restart.
@@ -158,11 +162,15 @@ Then use **Build → Build Bundle(s) / APK(s) → Build APK(s)** to create `app-
 
 The APK is created in `app/build/outputs/apk/debug/`. Copy it to your phone and install it.
 
-### 2. Password
+### 2. Calendar (optional)
 
-The password used to stop the lock early is **no longer** in the source code. The first time you activate the timer, the app asks you to set one; it is stored on the device only as a salted SHA-256 hash. You can change it with **Change lock password** while the timer is off.
+Use the **4 · Takvim** card to make the timer impossible to turn off:
 
-Stopping early takes 4 confirmation screens, each asking for the password again. A wrong password restarts the process; after 3 wrong attempts in a row you have to wait 30 seconds.
+- **Yok (none):** The timer can be stopped after a confirmation.
+- **Şu güne kadar (until):** Until the chosen date ends (inclusive), the timer can't be stopped and settings can't be changed.
+- **Şu günlerde (on these days):** On every date you add, the timer can't be stopped.
+
+On those days, Settings and the uninstall screen are blocked even outside lock hours, so the lock can't be bypassed by turning off the Accessibility service or uninstalling the app.
 
 ### 3. Grant permissions
 
@@ -177,9 +185,9 @@ When you open the app, two permissions are required:
 
 ### 4. Use it
 
-1. Press **Uygulamaları seç** (Select apps) and choose up to 6 apps, then save.
+1. Press **Uygulamaları seç** (Select apps), choose the apps that stay available, then save.
 2. Choose the start time, the end time and, if you like, the days.
-3. Press **ZAMANLAYICIYI AKTİF ET** (Activate timer). The first time, you'll be asked to set a lock password.
+3. Press **ZAMANLAYICIYI AKTİF ET** (Activate timer) and confirm the summary.
 
 While the timer is armed, opening the app shows the time left until the next lock. Once lock time arrives, the lock screen kicks in the moment you open a non-selected app.
 
@@ -196,12 +204,12 @@ Add that package name to the `ALWAYS_ALLOWED` list in `AppBlockerService.kt` and
 
 ## ⚠️ Limits
 
-Freedom Lock is a **self-discipline tool**, not a security barrier. Uninstalling the app, turning off the Accessibility service, or rebooting into safe mode bypasses the lock. The goal isn't to stop you by force, but to create a pause at the moment you reach for a distracting app.
+Freedom Lock is a **self-discipline tool**, not a security barrier. Without a calendar, uninstalling the app or turning off the Accessibility service bypasses the lock. Even on calendar days, booting into safe mode or changing the phone's date manually can bypass it. The goal isn't to stop you by force, but to create a pause at the moment you reach for a distracting app.
 
 ## 📁 Project structure
 
 | File | Purpose |
 |---|---|
-| `MainActivity.kt` | Settings and lock screen, grid, countdown, password dialog |
+| `MainActivity.kt` | Settings and lock screen, app grid, countdown, calendar |
 | `AppBlockerService.kt` | Accessibility service; detects non-allowed apps and brings the lock screen to the front |
-| `LockSettings.kt` | Persistent settings, password hash and time-window calculations |
+| `LockSettings.kt` | Persistent settings, calendar and time-window calculations |

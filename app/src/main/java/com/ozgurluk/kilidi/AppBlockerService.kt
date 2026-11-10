@@ -11,6 +11,7 @@ import android.telecom.TelecomManager
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 
 /**
  * Kilit penceresi içindeyken, izin verilmeyen bir uygulamanın penceresi açılırsa
@@ -66,14 +67,21 @@ class AppBlockerService : AccessibilityService() {
         foregroundPkg = pkg
         if (shouldBlock(pkg)) {
             Log.d(TAG, "Engellendi: $pkg ($className)")
+            if (pkg in TAMPER_PACKAGES && !LockSettings.isInLockWindow(this)) {
+                Toast.makeText(this, "Kilit kapatılamaz günlerde Ayarlar açılamaz.", Toast.LENGTH_SHORT).show()
+            }
             bringLockScreenToFront()
         }
     }
 
     private fun shouldBlock(pkg: String): Boolean {
         if (pkg == packageName) return false // kendi ekranımız
-        if (!LockSettings.isActive(this) || !LockSettings.isInLockWindow(this)) return false
-        return pkg !in LockSettings.allowedApps(this) // gridde seçilen serbest uygulamalar
+        if (!LockSettings.isActive(this)) return false
+        // Takvimle kapatılamaz günlerde kilit saatleri dışında da Ayarlar ve uygulama kaldırma
+        // ekranı açılamaz; aksi halde Erişilebilirlik servisi kapatılarak kilit aşılabilirdi.
+        if (pkg in TAMPER_PACKAGES && LockSettings.isCommittedNow(this)) return true
+        if (!LockSettings.isInLockWindow(this)) return false
+        return pkg !in LockSettings.allowedApps(this) // seçilen serbest uygulamalar
     }
 
     /** Ekran kapalıyken ya da telefon kilitliyken kilit ekranını açmaya çalışma. */
@@ -135,6 +143,14 @@ class AppBlockerService : AccessibilityService() {
         const val TAG = "OzgurlukKilidi"
         const val BOUNCE_DEBOUNCE_MS = 400L
         const val WATCHDOG_INTERVAL_MS = 2_000L
+
+        /** Kilidi kapatmaya / uygulamayı kaldırmaya yarayan ekranlar. */
+        val TAMPER_PACKAGES = setOf(
+            "com.android.settings",
+            "com.miui.securitycenter",
+            "com.android.packageinstaller",
+            "com.google.android.packageinstaller"
+        )
 
         /**
          * Kilit sırasında da çalışması gereken sistem yardımcıları.

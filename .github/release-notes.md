@@ -1,14 +1,15 @@
-## Özgürlük Kilidi v1.05
+## Özgürlük Kilidi v1.06
 
-### Yenilik
-- Odak modunu erken durdurmak artık 4 aşamalı: "Emin misin?", "Gerçekten emin misin?", "Ya düşündüm de, son kararın mı?" ve "Tamam, bak bu son ekran." Her ekranda şifre yeniden isteniyor.
-- Herhangi bir aşamada şifre yanlış girilirse ya da "Vazgeç" denirse süreç baştan başlıyor (3 hatalı denemede 30 sn bekleme devam ediyor).
-- Son ekranda şifre girilince kilit kapanıyor ve uygulama kapanıyor.
-
-### v1.04'ten beri gelenler
-- Uygulama içinde belirlenen ve cihazda özet olarak saklanan kilit şifresi
-- Kilit başladığında açık olan yasaklı uygulamanın da engellenmesi
-- Material 3 koyu tema, ilerleme çubuğu, izin durumu ve servis uyarıları
+### Değişiklikler
+- **Şifre özelliği tamamen kaldırıldı.** Cihazda kalan eski şifre verileri de otomatik silinir.
+- **Takvim (isteğe bağlı):**
+  - **Şu güne kadar:** Takvimden bir tarih seçilir; o gün bitene kadar zamanlayıcı hiçbir şekilde kapatılamaz.
+  - **Şu günlerde:** Tarihler tek tek eklenir; o günlerde zamanlayıcı hiçbir şekilde kapatılamaz.
+  - Bu günlerde Ayarlar ve uygulama kaldırma ekranı da açılamaz.
+  - Takvim seçilmezse zamanlayıcı bir onayla durdurulabilir.
+- **Saat ve gün seçimi zorunlu:** En az bir gün seçmeden zamanlayıcı kurulamaz.
+- **6 uygulama sınırı kalktı:** Kaç uygulamanın serbest kalacağına kurulumdan önce sen karar verirsin.
+- **Sosyal medya serbest olamaz:** Instagram, TikTok, X, Facebook, Snapchat, YouTube, Reddit, Telegram, Discord vb. (WhatsApp hariç) ve Ayarlar serbest listeye eklenemez.
 
 ### Kurulum
 APK'yı indirip kur. Önceki sürüm farklı bir anahtarla imzalandıysa önce eskisini kaldırman gerekir.

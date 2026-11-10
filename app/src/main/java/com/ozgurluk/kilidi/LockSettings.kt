@@ -3,9 +3,8 @@ package com.ozgurluk.kilidi
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
-import java.security.MessageDigest
-import java.security.SecureRandom
-import java.util.Base64
+import java.time.LocalDate
+import java.time.format.DateTimeParseException
 import java.util.Calendar
 
 /**
@@ -15,13 +14,12 @@ import java.util.Calendar
  */
 object LockSettings {
 
-    const val MAX_APPS = 6
     const val NOT_SET = -1
-    const val MIN_PASSWORD_LENGTH = 4
 
-    /** Art arda bu kadar hatalı şifre girilince bekleme süresi başlar. */
-    const val MAX_FAILED_ATTEMPTS = 3
-    private const val LOCKOUT_MS = 30_000L
+    /** Takvim bağlılığı türleri. */
+    const val COMMIT_NONE = 0
+    const val COMMIT_UNTIL = 1 // "Şu güne kadar"
+    const val COMMIT_DATES = 2 // "Şu günlerde"
 
     private const val PREFS_NAME = "OzgurlukKilidiPrefs"
     private const val KEY_ACTIVE = "scheduler_active"
@@ -29,10 +27,41 @@ object LockSettings {
     private const val KEY_END = "end_minutes"
     private const val KEY_DAYS = "selected_days"
     private const val KEY_APPS = "whitelist_apps"
-    private const val KEY_PW_HASH = "password_hash"
-    private const val KEY_PW_SALT = "password_salt"
-    private const val KEY_FAILED = "failed_attempts"
-    private const val KEY_LOCKOUT_UNTIL = "lockout_until"
+    private const val KEY_COMMIT_MODE = "commit_mode"
+    private const val KEY_COMMIT_UNTIL = "commit_until"
+    private const val KEY_COMMIT_DATES = "commit_dates"
+
+    /**
+     * Serbest listeye eklenemeyen uygulamalar: sosyal medya (WhatsApp hariç) ve kilidi kapatmaya
+     * yarayan sistem Ayarları.
+     */
+    val NOT_WHITELISTABLE = setOf(
+        // Instagram / Threads
+        "com.instagram.android", "com.instagram.lite", "com.instagram.barcelona",
+        // Facebook / Messenger
+        "com.facebook.katana", "com.facebook.lite", "com.facebook.orca", "com.facebook.mlite",
+        // TikTok
+        "com.zhiliaoapp.musically", "com.ss.android.ugc.trill", "com.zhiliaoapp.musically.go",
+        "com.ss.android.ugc.tiktok.lite",
+        // X (Twitter)
+        "com.twitter.android", "com.twitter.android.lite",
+        // Snapchat
+        "com.snapchat.android",
+        // YouTube
+        "com.google.android.youtube",
+        // Reddit, Pinterest, Tumblr, LinkedIn
+        "com.reddit.frontpage", "com.pinterest", "com.tumblr", "com.linkedin.android",
+        // Telegram, Discord
+        "org.telegram.messenger", "org.telegram.messenger.web", "org.thunderdog.challegram",
+        "com.discord",
+        // Twitch, Bluesky, Mastodon, BeReal, VK, Likee, Lemon8
+        "tv.twitch.android.app", "xyz.blueskyweb.app", "org.joinmastodon.android",
+        "com.bereal.ft", "com.vkontakte.android", "video.like", "com.bd.nproject",
+        // Ayarlar: serbest olursa Erişilebilirlik servisi kapatılıp kilit aşılabilir
+        "com.android.settings"
+    )
+
+    fun isWhitelistable(pkg: String): Boolean = pkg !in NOT_WHITELISTABLE
 
     private fun prefs(context: Context): SharedPreferences =
         context.applicationContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
@@ -55,7 +84,7 @@ object LockSettings {
     fun setEndMinutes(context: Context, minutes: Int) =
         prefs(context).edit { putInt(KEY_END, minutes) }
 
-    /** Calendar.MONDAY vb. değerleri. Boşsa "her gün" anlamına gelir. */
+    /** Calendar.MONDAY vb. değerleri. Kurulum için en az bir gün seçilmesi zorunludur. */
     fun days(context: Context): Set<Int> =
         prefs(context).getStringSet(KEY_DAYS, emptySet())
             ?.mapNotNull { it.toIntOrNull() }
@@ -65,65 +94,62 @@ object LockSettings {
     fun setDays(context: Context, days: Set<Int>) =
         prefs(context).edit { putStringSet(KEY_DAYS, days.map { it.toString() }.toSet()) }
 
+    /** Serbest uygulamalar. Eski sürümlerde seçilmiş sosyal medya uygulamaları elenir. */
     fun allowedApps(context: Context): Set<String> =
-        prefs(context).getStringSet(KEY_APPS, emptySet())?.toSet() ?: emptySet()
+        (prefs(context).getStringSet(KEY_APPS, emptySet()) ?: emptySet())
+            .filter { isWhitelistable(it) }
+            .toSet()
 
     fun setAllowedApps(context: Context, apps: Set<String>) =
-        prefs(context).edit { putStringSet(KEY_APPS, apps.toSet()) }
+        prefs(context).edit { putStringSet(KEY_APPS, apps.filter { isWhitelistable(it) }.toSet()) }
 
-    // ---- Şifre ------------------------------------------------------------------------------
-    // Şifre artık kaynak kodda değil, cihazda tuzlu SHA-256 özeti olarak saklanır.
-
-    fun hasPassword(context: Context): Boolean =
-        prefs(context).getString(KEY_PW_HASH, null) != null
-
-    fun setPassword(context: Context, password: String) {
-        val salt = ByteArray(16).also { SecureRandom().nextBytes(it) }
-        prefs(context).edit {
-            putString(KEY_PW_SALT, encode(salt))
-            putString(KEY_PW_HASH, encode(hash(password, salt)))
-            putInt(KEY_FAILED, 0)
-            putLong(KEY_LOCKOUT_UNTIL, 0L)
-        }
+    /** Eski sürümlerin şifre verilerini cihazdan siler. */
+    fun clearLegacyPasswordData(context: Context) = prefs(context).edit {
+        remove("password_hash")
+        remove("password_salt")
+        remove("failed_attempts")
+        remove("lockout_until")
     }
 
-    fun checkPassword(context: Context, password: String): Boolean {
-        val p = prefs(context)
-        val storedHash = p.getString(KEY_PW_HASH, null) ?: return false
-        val salt = p.getString(KEY_PW_SALT, null)?.let { decode(it) } ?: return false
-        return MessageDigest.isEqual(hash(password, salt), decode(storedHash))
-    }
+    // ---- Takvim bağlılığı -------------------------------------------------------------------
 
-    /** Hatalı denemeden sonra kalan bekleme süresi (ms). 0 ise şifre girilebilir. */
-    fun lockoutRemainingMs(context: Context): Long =
-        (prefs(context).getLong(KEY_LOCKOUT_UNTIL, 0L) - System.currentTimeMillis()).coerceAtLeast(0L)
+    fun commitMode(context: Context): Int = prefs(context).getInt(KEY_COMMIT_MODE, COMMIT_NONE)
 
-    /** Hatalı denemeyi kaydeder; sınır aşıldıysa bekleme süresini başlatır. Kalan hakkı döndürür. */
-    fun registerFailedAttempt(context: Context): Int {
-        val p = prefs(context)
-        val failed = p.getInt(KEY_FAILED, 0) + 1
-        if (failed >= MAX_FAILED_ATTEMPTS) {
-            p.edit {
-                putInt(KEY_FAILED, 0)
-                putLong(KEY_LOCKOUT_UNTIL, System.currentTimeMillis() + LOCKOUT_MS)
-            }
-            return 0
+    fun setCommitMode(context: Context, mode: Int) =
+        prefs(context).edit { putInt(KEY_COMMIT_MODE, mode) }
+
+    /** "Şu güne kadar" tarihi (o gün dahil). */
+    fun commitUntil(context: Context): LocalDate? =
+        prefs(context).getString(KEY_COMMIT_UNTIL, null)?.let { parseDate(it) }
+
+    fun setCommitUntil(context: Context, date: LocalDate?) =
+        prefs(context).edit { putString(KEY_COMMIT_UNTIL, date?.toString()) }
+
+    /** "Şu günlerde" seçilen tarihler. */
+    fun commitDates(context: Context): Set<LocalDate> =
+        (prefs(context).getStringSet(KEY_COMMIT_DATES, emptySet()) ?: emptySet())
+            .mapNotNull { parseDate(it) }
+            .toSet()
+
+    fun setCommitDates(context: Context, dates: Set<LocalDate>) =
+        prefs(context).edit { putStringSet(KEY_COMMIT_DATES, dates.map { it.toString() }.toSet()) }
+
+    /**
+     * Zamanlayıcı şu an kapatılamaz durumda mı? Kurulu zamanlayıcı, "şu güne kadar" seçildiyse
+     * o tarih bitene kadar, "şu günlerde" seçildiyse o tarihlerin her birinde durdurulamaz.
+     */
+    fun isCommittedNow(context: Context, today: LocalDate = LocalDate.now()): Boolean =
+        when (commitMode(context)) {
+            COMMIT_UNTIL -> commitUntil(context)?.let { !today.isAfter(it) } ?: false
+            COMMIT_DATES -> today in commitDates(context)
+            else -> false
         }
-        p.edit { putInt(KEY_FAILED, failed) }
-        return MAX_FAILED_ATTEMPTS - failed
+
+    private fun parseDate(text: String): LocalDate? = try {
+        LocalDate.parse(text)
+    } catch (e: DateTimeParseException) {
+        null
     }
-
-    fun resetFailedAttempts(context: Context) =
-        prefs(context).edit { putInt(KEY_FAILED, 0); putLong(KEY_LOCKOUT_UNTIL, 0L) }
-
-    private fun hash(password: String, salt: ByteArray): ByteArray =
-        MessageDigest.getInstance("SHA-256").run {
-            update(salt)
-            digest(password.toByteArray(Charsets.UTF_8))
-        }
-
-    private fun encode(bytes: ByteArray): String = Base64.getEncoder().encodeToString(bytes)
-    private fun decode(text: String): ByteArray = Base64.getDecoder().decode(text)
 
     // ---- Zaman hesapları --------------------------------------------------------------------
 
@@ -148,6 +174,7 @@ object LockSettings {
             }
         }
 
+        // Eski sürümlerden kalan "gün seçilmedi = her gün" kurulumları çalışmaya devam etsin.
         val days = days(context)
         return days.isEmpty() || ownerDay in days
     }

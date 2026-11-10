@@ -116,6 +116,14 @@
                         android:text="2 · SERBEST UYGULAMALAR" />
 
                     <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:text="Kaç uygulama serbest kalacağına sen karar ver. Sosyal medya uygulamaları (WhatsApp hariç) ve Ayarlar seçilemez."
+                        android:textColor="@color/text_secondary"
+                        android:textSize="12sp" />
+
+                    <TextView
                         android:id="@+id/tvSelectedApps"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -128,7 +136,7 @@
                         style="@style/Widget.Material3.Button.TonalButton"
                         android:layout_width="match_parent"
                         android:layout_height="56dp"
-                        android:text="Uygulamaları seç (en fazla 6)"
+                        android:text="Uygulamaları seç"
                         android:textAllCaps="false"
                         app:cornerRadius="14dp" />
                 </LinearLayout>
@@ -226,9 +234,111 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:text="Hiçbir gün seçilmezse kilit her gün çalışır."
+                        android:text="Saat aralığı ve en az bir gün seçmek zorunludur."
                         android:textColor="@color/text_secondary"
                         android:textSize="12sp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 4. Takvim (isteğe bağlı) -->
+            <com.google.android.material.card.MaterialCardView style="@style/SettingsCard">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/SectionTitle"
+                        android:text="4 · TAKVİM (İSTEĞE BAĞLI)" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:text="Seçtiğin tarihlerde zamanlayıcı hiçbir şekilde kapatılamaz."
+                        android:textColor="@color/text_secondary"
+                        android:textSize="12sp" />
+
+                    <com.google.android.material.button.MaterialButtonToggleGroup
+                        android:id="@+id/groupCommitMode"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:checkedButton="@+id/btnModeNone"
+                        app:selectionRequired="true"
+                        app:singleSelection="true">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnModeNone"
+                            style="@style/Widget.Material3.Button.OutlinedButton"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:paddingHorizontal="4dp"
+                            android:text="Yok"
+                            android:textAllCaps="false"
+                            android:textSize="12sp" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnModeUntil"
+                            style="@style/Widget.Material3.Button.OutlinedButton"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:paddingHorizontal="4dp"
+                            android:text="Şu güne kadar"
+                            android:textAllCaps="false"
+                            android:textSize="12sp" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnModeDates"
+                            style="@style/Widget.Material3.Button.OutlinedButton"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:paddingHorizontal="4dp"
+                            android:text="Şu günlerde"
+                            android:textAllCaps="false"
+                            android:textSize="12sp" />
+                    </com.google.android.material.button.MaterialButtonToggleGroup>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnPickUntil"
+                        style="@style/Widget.Material3.Button.TonalButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:layout_marginTop="12dp"
+                        android:text="Tarih seç"
+                        android:textAllCaps="false"
+                        android:visibility="gone"
+                        app:cornerRadius="14dp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnAddDate"
+                        style="@style/Widget.Material3.Button.TonalButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:layout_marginTop="12dp"
+                        android:text="+ Gün ekle"
+                        android:textAllCaps="false"
+                        android:visibility="gone"
+                        app:cornerRadius="14dp" />
+
+                    <com.google.android.material.chip.ChipGroup
+                        android:id="@+id/chipDates"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/tvCommitInfo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:textColor="@color/warning"
+                        android:textSize="13sp"
+                        android:visibility="gone" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -243,16 +353,6 @@
                 android:textStyle="bold"
                 app:cornerRadius="18dp" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnChangePassword"
-                style="@style/Widget.Material3.Button.TextButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="8dp"
-                android:text="Kilit şifresini belirle"
-                android:textAllCaps="false"
-                android:textColor="@color/text_secondary" />
         </LinearLayout>
     </ScrollView>
 
@@ -353,18 +453,13 @@
                 android:textSize="12sp"
                 android:textStyle="bold" />
 
-            <!-- İzin verilen (en fazla 6) uygulamalar -->
-            <GridView
-                android:id="@+id/gvAllowedApps"
+            <!-- İzin verilen uygulamalar (sayı sınırı yok; satır satır doldurulur) -->
+            <LinearLayout
+                android:id="@+id/layoutAllowedApps"
                 android:layout_width="match_parent"
-                android:layout_height="230dp"
+                android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:horizontalSpacing="12dp"
-                android:listSelector="@android:color/transparent"
-                android:numColumns="3"
-                android:overScrollMode="never"
-                android:stretchMode="columnWidth"
-                android:verticalSpacing="12dp" />
+                android:orientation="vertical" />
 
             <TextView
                 android:id="@+id/tvNoApps"
@@ -375,6 +470,16 @@
                 android:text="Serbest uygulama seçilmedi. Şimdilik sadece odaklan!"
                 android:textColor="@color/text_secondary"
                 android:textSize="14sp"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/tvLockCommit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:gravity="center"
+                android:textColor="@color/warning"
+                android:textSize="13sp"
                 android:visibility="gone" />
 
             <com.google.android.material.button.MaterialButton
