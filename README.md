@@ -1,4 +1,9 @@
-# 🗽 Özgürlük Kilidi (Freedom Lock)
+# 🗽 Özgürlük Kilidi (Freedom Lock) — Android uygulama kilidi ve dijital detoks
+
+> Özgürlük Kilidi uygulaması: telefon bağımlılığına karşı belirlediğin saatlerde yalnızca seçtiğin uygulamaları açık bırakan ücretsiz Android app blocker.
+
+🌐 **Proje sayfası:** [https://enoli13.github.io/ozgurluk-kilidi/](https://enoli13.github.io/ozgurluk-kilidi/) · ⬇ [Son sürümü indir](https://github.com/Enoli13/Ozgurluk-Kilidi-Freedom-Lock/releases/latest)
+
 
 [🇹🇷 Türkçe](#-türkçe) · [🇬🇧 English](#-english)
 
