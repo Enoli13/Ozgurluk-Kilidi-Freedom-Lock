@@ -3,6 +3,9 @@ package com.ozgurluk.kilidi
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
+import java.security.MessageDigest
+import java.security.SecureRandom
+import java.util.Base64
 import java.util.Calendar
 
 /**
@@ -14,6 +17,11 @@ object LockSettings {
 
     const val MAX_APPS = 6
     const val NOT_SET = -1
+    const val MIN_PASSWORD_LENGTH = 4
+
+    /** Art arda bu kadar hatalı şifre girilince bekleme süresi başlar. */
+    const val MAX_FAILED_ATTEMPTS = 3
+    private const val LOCKOUT_MS = 30_000L
 
     private const val PREFS_NAME = "OzgurlukKilidiPrefs"
     private const val KEY_ACTIVE = "scheduler_active"
@@ -21,6 +29,10 @@ object LockSettings {
     private const val KEY_END = "end_minutes"
     private const val KEY_DAYS = "selected_days"
     private const val KEY_APPS = "whitelist_apps"
+    private const val KEY_PW_HASH = "password_hash"
+    private const val KEY_PW_SALT = "password_salt"
+    private const val KEY_FAILED = "failed_attempts"
+    private const val KEY_LOCKOUT_UNTIL = "lockout_until"
 
     private fun prefs(context: Context): SharedPreferences =
         context.applicationContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
@@ -59,6 +71,60 @@ object LockSettings {
     fun setAllowedApps(context: Context, apps: Set<String>) =
         prefs(context).edit { putStringSet(KEY_APPS, apps.toSet()) }
 
+    // ---- Şifre ------------------------------------------------------------------------------
+    // Şifre artık kaynak kodda değil, cihazda tuzlu SHA-256 özeti olarak saklanır.
+
+    fun hasPassword(context: Context): Boolean =
+        prefs(context).getString(KEY_PW_HASH, null) != null
+
+    fun setPassword(context: Context, password: String) {
+        val salt = ByteArray(16).also { SecureRandom().nextBytes(it) }
+        prefs(context).edit {
+            putString(KEY_PW_SALT, encode(salt))
+            putString(KEY_PW_HASH, encode(hash(password, salt)))
+            putInt(KEY_FAILED, 0)
+            putLong(KEY_LOCKOUT_UNTIL, 0L)
+        }
+    }
+
+    fun checkPassword(context: Context, password: String): Boolean {
+        val p = prefs(context)
+        val storedHash = p.getString(KEY_PW_HASH, null) ?: return false
+        val salt = p.getString(KEY_PW_SALT, null)?.let { decode(it) } ?: return false
+        return MessageDigest.isEqual(hash(password, salt), decode(storedHash))
+    }
+
+    /** Hatalı denemeden sonra kalan bekleme süresi (ms). 0 ise şifre girilebilir. */
+    fun lockoutRemainingMs(context: Context): Long =
+        (prefs(context).getLong(KEY_LOCKOUT_UNTIL, 0L) - System.currentTimeMillis()).coerceAtLeast(0L)
+
+    /** Hatalı denemeyi kaydeder; sınır aşıldıysa bekleme süresini başlatır. Kalan hakkı döndürür. */
+    fun registerFailedAttempt(context: Context): Int {
+        val p = prefs(context)
+        val failed = p.getInt(KEY_FAILED, 0) + 1
+        if (failed >= MAX_FAILED_ATTEMPTS) {
+            p.edit {
+                putInt(KEY_FAILED, 0)
+                putLong(KEY_LOCKOUT_UNTIL, System.currentTimeMillis() + LOCKOUT_MS)
+            }
+            return 0
+        }
+        p.edit { putInt(KEY_FAILED, failed) }
+        return MAX_FAILED_ATTEMPTS - failed
+    }
+
+    fun resetFailedAttempts(context: Context) =
+        prefs(context).edit { putInt(KEY_FAILED, 0); putLong(KEY_LOCKOUT_UNTIL, 0L) }
+
+    private fun hash(password: String, salt: ByteArray): ByteArray =
+        MessageDigest.getInstance("SHA-256").run {
+            update(salt)
+            digest(password.toByteArray(Charsets.UTF_8))
+        }
+
+    private fun encode(bytes: ByteArray): String = Base64.getEncoder().encodeToString(bytes)
+    private fun decode(text: String): ByteArray = Base64.getDecoder().decode(text)
+
     // ---- Zaman hesapları --------------------------------------------------------------------
 
     /** Şu an kilit penceresinin (başlangıç–bitiş, seçili günler) içinde miyiz? */
@@ -84,6 +150,14 @@ object LockSettings {
 
         val days = days(context)
         return days.isEmpty() || ownerDay in days
+    }
+
+    /** Bir kilit oturumunun toplam uzunluğu (saniye). */
+    fun windowLengthSeconds(context: Context): Long {
+        val start = startMinutes(context)
+        val end = endMinutes(context)
+        if (start == NOT_SET || end == NOT_SET || start == end) return 0L
+        return ((end - start + 1440) % 1440) * 60L
     }
 
     /** Kilit penceresi içindeyken bitişe kalan saniye. */

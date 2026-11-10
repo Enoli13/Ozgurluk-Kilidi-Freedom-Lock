@@ -2,4 +2,18 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- Özgürlük Kilidi paleti -->
+    <color name="bg">#0E1014</color>
+    <color name="surface">#171A21</color>
+    <color name="surface_high">#20242D</color>
+    <color name="stroke">#2A2F3A</color>
+    <color name="accent">#4FD1C5</color>
+    <color name="on_accent">#06201D</color>
+    <color name="accent_soft">#1A3B39</color>
+    <color name="danger">#FF6B6B</color>
+    <color name="on_danger">#2A0A0A</color>
+    <color name="warning">#FFB74D</color>
+    <color name="text_primary">#ECEFF4</color>
+    <color name="text_secondary">#9AA3B2</color>
 </resources>

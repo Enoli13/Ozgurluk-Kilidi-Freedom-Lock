@@ -12,9 +12,11 @@
 
 - **Serbest uygulamalar:** Telefondaki uygulamalar otomatik taranır, kilit sırasında açık kalacak en fazla 6 tanesini listeden seçersin. Kilit ekranında bu uygulamalar bir ikon ızgarası (grid) olarak görünür ve tüm özellikleriyle kullanılabilir (klavye, dosya/fotoğraf seçici, izin pencereleri dahil).
 - **Akıllı zamanlayıcı:** Başlangıç ve bitiş saatini, ayrıca haftanın hangi günlerinde çalışacağını seçersin. Gün seçmezsen kilit her gün çalışır. Gece yarısını aşan aralıklar (örneğin 22:00 – 02:00) desteklenir.
-- **Geri sayım:** Kilit sırasında bitişe kalan süre görünür. Süre dolunca kilit ekranı kapanır ve engelleme kendiliğinden durur.
-- **Motivasyon kartı:** Kilit ekranında rastgele bir özlü söz gösterilir (yalnızca Türkçe).
-- **Güvenlik şifresi:** Zamanlayıcıyı süre dolmadan durdurmak için şifre girmen gerekir.
+- **Geri sayım:** Kilit sırasında bitişe kalan süre ve ilerleme çubuğu görünür. Süre dolunca kilit ekranı kapanır ve engelleme kendiliğinden durur.
+- **Motivasyon kartı:** Kilit ekranında rastgele bir özlü söz gösterilir; dokununca değişir (yalnızca Türkçe).
+- **Güvenlik şifresi:** Zamanlayıcıyı süre dolmadan durdurmak için uygulama içinde belirlediğin şifreyi girmen gerekir. Hatalı denemeler sınırlıdır.
+- **Anında devreye girer:** Kilit saati başladığında yasaklı bir uygulama zaten açıksa birkaç saniye içinde kilit ekranına geçilir.
+- **Durum takibi:** İzinlerin verilip verilmediği ve Erişilebilirlik servisi kapanırsa kilidin çalışmadığı ana ekranda gösterilir.
 - **Kalıcı ayarlar:** Saatler, günler ve seçilen uygulamalar telefon yeniden başlasa bile kaybolmaz.
 - **Ayarlar kilitlenir:** Zamanlayıcı kuruluyken saat, gün ve uygulama seçimi değiştirilemez.
 - **Gelen aramalar engellenmez:** Arama ekranı ve çalan alarm kilit yüzünden engellenmez.
@@ -54,15 +56,11 @@ Ardından **Build → Build Bundle(s) / APK(s) → Build APK(s)** ile `app-debug
 
 APK `app/build/outputs/apk/debug/` klasöründe oluşur. Dosyayı telefonuna aktarıp kur.
 
-### 2. Şifreni belirle (derlemeden önce)
+### 2. Şifre
 
-Kilidi erken durdurmak için kullanılan şifre `MainActivity.kt` dosyasında `UNLOCK_PASSWORD` sabitinde tutulur:
+Kilidi erken durdurmak için kullanılan şifre artık kaynak kodda **değil**. Zamanlayıcıyı ilk kez aktif ederken uygulama senden bir şifre belirlemeni ister; şifre telefonda yalnızca tuzlu SHA-256 özeti olarak saklanır. Zamanlayıcı kapalıyken **Kilit şifresini değiştir** düğmesiyle değiştirebilirsin.
 
-```
-app/src/main/java/com/ozgurluk/kilidi/MainActivity.kt
-```
-
-Derlemeden önce bunu kendi şifrenle değiştir. Repo herkese açıksa kaynak koddaki şifreyi herkes görebilir, başka yerlerde kullandığın bir şifreyi buraya yazma.
+Art arda 3 hatalı denemeden sonra 30 saniye beklemen gerekir.
 
 ### 3. İzinleri ver
 
@@ -77,9 +75,9 @@ Uygulamayı açınca iki izin gerekir:
 
 ### 4. Kullan
 
-1. **Detoks Dışı Uygulamaları Seç** düğmesiyle en fazla 6 uygulama seç ve kaydet.
+1. **Uygulamaları seç** düğmesiyle en fazla 6 uygulama seç ve kaydet.
 2. Başlangıç ve bitiş saatini, istersen günleri seç.
-3. **ZAMANLAYICIYI AKTİF ET** düğmesine bas.
+3. **ZAMANLAYICIYI AKTİF ET** düğmesine bas. İlk seferde bir kilit şifresi belirlemen istenir.
 
 Zamanlayıcı kuruluyken uygulamayı açarsan bir sonraki kilide kalan süreyi görürsün. Kilit saati gelince seçilmemiş bir uygulamayı açtığın anda kilit ekranı devreye girer.
 
@@ -102,9 +100,9 @@ Buradaki paket adını `AppBlockerService.kt` dosyasındaki `ALWAYS_ALLOWED` lis
 
 | Dosya | Görevi |
 |---|---|
-| `MainActivity.kt` | Ayar ve kilit ekranı, grid, geri sayım, şifre penceresi |
+| `MainActivity.kt` | Ayar ve kilit ekranı, grid, geri sayım, şifre pencereleri |
 | `AppBlockerService.kt` | Erişilebilirlik servisi; izinsiz uygulamayı fark edip kilit ekranını öne getirir |
-| `LockSettings.kt` | Kalıcı ayarlar ve zaman penceresi hesapları |
+| `LockSettings.kt` | Kalıcı ayarlar, şifre özeti ve zaman penceresi hesapları |
 
 ---
 
@@ -116,9 +114,11 @@ Freedom Lock is an Android app for digital detox and focus. During the time wind
 
 - **Allowed apps:** The app scans your installed apps and lets you pick up to 6 to stay available during the lock. They appear as an icon grid on the lock screen and work with all their features (keyboard, file/photo pickers and permission dialogs included).
 - **Smart scheduler:** Choose a start time, an end time, and the days of the week it should run. If no day is selected, it runs every day. Windows that cross midnight (e.g. 22:00 – 02:00) are supported.
-- **Countdown:** The remaining time is shown during the lock. When it hits zero, the lock screen closes and blocking stops automatically.
-- **Motivation card:** A random quote is shown on the lock screen (Turkish only).
-- **Security password:** A password is required to stop the timer before it ends.
+- **Countdown:** The remaining time and a progress bar are shown during the lock. When it hits zero, the lock screen closes and blocking stops automatically.
+- **Motivation card:** A random quote is shown on the lock screen; tap it for another one (Turkish only).
+- **Security password:** The password you set in the app is required to stop the timer early. Wrong attempts are rate-limited.
+- **Kicks in immediately:** If a blocked app is already open when the lock starts, you're moved to the lock screen within a few seconds.
+- **Status at a glance:** The home screen shows which permissions are granted and warns you if the Accessibility service was turned off.
 - **Persistent settings:** Times, days and selected apps survive a phone restart.
 - **Settings locked while armed:** You can't change times, days or apps while the timer is set.
 - **Calls are never blocked:** The call screen and ringing alarms are not blocked by the lock.
@@ -158,15 +158,11 @@ Then use **Build → Build Bundle(s) / APK(s) → Build APK(s)** to create `app-
 
 The APK is created in `app/build/outputs/apk/debug/`. Copy it to your phone and install it.
 
-### 2. Set your password (before building)
+### 2. Password
 
-The password used to stop the lock early is kept in the `UNLOCK_PASSWORD` constant in `MainActivity.kt`:
+The password used to stop the lock early is **no longer** in the source code. The first time you activate the timer, the app asks you to set one; it is stored on the device only as a salted SHA-256 hash. You can change it with **Change lock password** while the timer is off.
 
-```
-app/src/main/java/com/ozgurluk/kilidi/MainActivity.kt
-```
-
-Change it to your own password before building. If the repository is public, anyone can read the password in the source, so don't use a password you use elsewhere.
+After 3 wrong attempts in a row you have to wait 30 seconds.
 
 ### 3. Grant permissions
 
@@ -181,9 +177,9 @@ When you open the app, two permissions are required:
 
 ### 4. Use it
 
-1. Press **Select Whitelist Apps** and choose up to 6 apps, then save.
+1. Press **Uygulamaları seç** (Select apps) and choose up to 6 apps, then save.
 2. Choose the start time, the end time and, if you like, the days.
-3. Press **ACTIVATE TIMER**.
+3. Press **ZAMANLAYICIYI AKTİF ET** (Activate timer). The first time, you'll be asked to set a lock password.
 
 While the timer is armed, opening the app shows the time left until the next lock. Once lock time arrives, the lock screen kicks in the moment you open a non-selected app.
 
@@ -208,4 +204,4 @@ Freedom Lock is a **self-discipline tool**, not a security barrier. Uninstalling
 |---|---|
 | `MainActivity.kt` | Settings and lock screen, grid, countdown, password dialog |
 | `AppBlockerService.kt` | Accessibility service; detects non-allowed apps and brings the lock screen to the front |
-| `LockSettings.kt` | Persistent settings and time-window calculations |
+| `LockSettings.kt` | Persistent settings, password hash and time-window calculations |

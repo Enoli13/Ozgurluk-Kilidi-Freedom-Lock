@@ -1,185 +1,271 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/rootLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#121212"
-    android:gravity="center_horizontal"
-    android:orientation="vertical"
-    android:padding="24dp">
+    android:background="@color/bg">
 
-    <!-- AYARLAR MODU (Kilit kapalıyken görünecek alan) -->
+    <!-- ============================ AYARLAR MODU ============================ -->
     <ScrollView
         android:id="@+id/layoutSettings"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true">
+        android:clipToPadding="false"
+        android:fillViewport="true"
+        android:paddingHorizontal="20dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="28dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
             android:orientation="vertical">
 
+            <!-- Başlık -->
             <TextView
-                android:id="@+id/tvStatus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
-                android:gravity="center"
-                android:text="Zamanlayıcı Beklemede"
-                android:textColor="#4CAF50"
-                android:textSize="24sp"
+                android:text="@string/app_name"
+                android:textColor="@color/text_primary"
+                android:textSize="28sp"
                 android:textStyle="bold" />
 
-            <Button
-                android:id="@+id/btnOverlayPermission"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginBottom="8dp"
-                android:backgroundTint="#FF9800"
-                android:text="1. Üstte Gösterim İzni Ver" />
-
-            <Button
-                android:id="@+id/btnAccessibilityPermission"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginBottom="24dp"
-                android:backgroundTint="#FF9800"
-                android:text="2. Erişilebilirlik İzni Ver" />
-
-            <Button
-                android:id="@+id/btnSelectApps"
-                android:layout_width="match_parent"
-                android:layout_height="55dp"
-                android:layout_marginBottom="16dp"
-                android:backgroundTint="#009688"
-                android:text="Detoks Dışı Uygulamaları Seç (Max 6)" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/btnStartTime"
-                    android:layout_width="0dp"
-                    android:layout_height="55dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_weight="1"
-                    android:backgroundTint="#333333"
-                    android:text="Başlangıç: --:--" />
-
-                <Button
-                    android:id="@+id/btnEndTime"
-                    android:layout_width="0dp"
-                    android:layout_height="55dp"
-                    android:layout_weight="1"
-                    android:backgroundTint="#333333"
-                    android:text="Bitiş: --:--" />
-            </LinearLayout>
-
-            <HorizontalScrollView
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:scrollbars="none">
+                android:layout_marginBottom="20dp"
+                android:text="Odak saatlerinde yalnızca seçtiğin uygulamalar açık kalır."
+                android:textColor="@color/text_secondary"
+                android:textSize="14sp" />
+
+            <!-- Durum kartı -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardStatus"
+                style="@style/SettingsCard"
+                app:cardBackgroundColor="@color/surface_high">
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="vertical">
 
-                    <ToggleButton
-                        android:id="@+id/btnMon"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_margin="2dp"
-                        android:backgroundTint="@color/day_toggle_tint"
-                        android:textOff="Pz"
-                        android:textOn="Pz" />
+                    <TextView
+                        android:id="@+id/tvStatus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Zamanlayıcı Beklemede"
+                        android:textColor="@color/accent"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
 
-                    <ToggleButton
-                        android:id="@+id/btnTue"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_margin="2dp"
-                        android:backgroundTint="@color/day_toggle_tint"
-                        android:textOff="Sa"
-                        android:textOn="Sa" />
-
-                    <ToggleButton
-                        android:id="@+id/btnWed"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_margin="2dp"
-                        android:backgroundTint="@color/day_toggle_tint"
-                        android:textOff="Ça"
-                        android:textOn="Ça" />
-
-                    <ToggleButton
-                        android:id="@+id/btnThu"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_margin="2dp"
-                        android:backgroundTint="@color/day_toggle_tint"
-                        android:textOff="Pe"
-                        android:textOn="Pe" />
-
-                    <ToggleButton
-                        android:id="@+id/btnFri"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_margin="2dp"
-                        android:backgroundTint="@color/day_toggle_tint"
-                        android:textOff="Cu"
-                        android:textOn="Cu" />
-
-                    <ToggleButton
-                        android:id="@+id/btnSat"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_margin="2dp"
-                        android:backgroundTint="@color/day_toggle_tint"
-                        android:textOff="Ct"
-                        android:textOn="Ct" />
-
-                    <ToggleButton
-                        android:id="@+id/btnSun"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_margin="2dp"
-                        android:backgroundTint="@color/day_toggle_tint"
-                        android:textOff="Pa"
-                        android:textOn="Pa" />
+                    <TextView
+                        android:id="@+id/tvStatusDetail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="14sp" />
                 </LinearLayout>
-            </HorizontalScrollView>
+            </com.google.android.material.card.MaterialCardView>
 
-            <TextView
+            <!-- 1. İzinler -->
+            <com.google.android.material.card.MaterialCardView style="@style/SettingsCard">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/SectionTitle"
+                        android:text="1 · İZİNLER" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnOverlayPermission"
+                        style="@style/Widget.Material3.Button.OutlinedButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:gravity="start|center_vertical"
+                        android:text="Üstte gösterim izni ver"
+                        android:textAllCaps="false"
+                        app:cornerRadius="14dp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnAccessibilityPermission"
+                        style="@style/Widget.Material3.Button.OutlinedButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:gravity="start|center_vertical"
+                        android:text="Erişilebilirlik izni ver"
+                        android:textAllCaps="false"
+                        app:cornerRadius="14dp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 2. Serbest uygulamalar -->
+            <com.google.android.material.card.MaterialCardView style="@style/SettingsCard">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/SectionTitle"
+                        android:text="2 · SERBEST UYGULAMALAR" />
+
+                    <TextView
+                        android:id="@+id/tvSelectedApps"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        android:textColor="@color/text_primary"
+                        android:textSize="14sp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnSelectApps"
+                        style="@style/Widget.Material3.Button.TonalButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:text="Uygulamaları seç (en fazla 6)"
+                        android:textAllCaps="false"
+                        app:cornerRadius="14dp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 3. Zamanlama -->
+            <com.google.android.material.card.MaterialCardView style="@style/SettingsCard">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/SectionTitle"
+                        android:text="3 · ZAMANLAMA" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnStartTime"
+                            style="@style/Widget.Material3.Button.TonalButton"
+                            android:layout_width="0dp"
+                            android:layout_height="64dp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_weight="1"
+                            android:text="Başlangıç\n--:--"
+                            android:textAllCaps="false"
+                            app:cornerRadius="14dp" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnEndTime"
+                            style="@style/Widget.Material3.Button.TonalButton"
+                            android:layout_width="0dp"
+                            android:layout_height="64dp"
+                            android:layout_weight="1"
+                            android:text="Bitiş\n--:--"
+                            android:textAllCaps="false"
+                            app:cornerRadius="14dp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <ToggleButton
+                            android:id="@+id/btnMon"
+                            style="@style/DayToggle"
+                            android:textOff="Pzt"
+                            android:textOn="Pzt" />
+
+                        <ToggleButton
+                            android:id="@+id/btnTue"
+                            style="@style/DayToggle"
+                            android:textOff="Sal"
+                            android:textOn="Sal" />
+
+                        <ToggleButton
+                            android:id="@+id/btnWed"
+                            style="@style/DayToggle"
+                            android:textOff="Çar"
+                            android:textOn="Çar" />
+
+                        <ToggleButton
+                            android:id="@+id/btnThu"
+                            style="@style/DayToggle"
+                            android:textOff="Per"
+                            android:textOn="Per" />
+
+                        <ToggleButton
+                            android:id="@+id/btnFri"
+                            style="@style/DayToggle"
+                            android:textOff="Cum"
+                            android:textOn="Cum" />
+
+                        <ToggleButton
+                            android:id="@+id/btnSat"
+                            style="@style/DayToggle"
+                            android:textOff="Cmt"
+                            android:textOn="Cmt" />
+
+                        <ToggleButton
+                            android:id="@+id/btnSun"
+                            style="@style/DayToggle"
+                            android:textOff="Paz"
+                            android:textOn="Paz" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Hiçbir gün seçilmezse kilit her gün çalışır."
+                        android:textColor="@color/text_secondary"
+                        android:textSize="12sp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnLock"
+                style="@style/Widget.Material3.Button"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:layout_marginTop="6dp"
+                android:text="ZAMANLAYICIYI AKTİF ET"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:cornerRadius="18dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnChangePassword"
+                style="@style/Widget.Material3.Button.TextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
-                android:text="Hiçbir gün seçilmezse kilit her gün çalışır."
-                android:textColor="#9E9E9E"
-                android:textSize="12sp" />
-
-            <Button
-                android:id="@+id/btnLock"
-                android:layout_width="match_parent"
-                android:layout_height="65dp"
-                android:backgroundTint="#E53935"
-                android:text="ZAMANLAYICIYI AKTİF ET"
-                android:textStyle="bold" />
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="8dp"
+                android:text="Kilit şifresini belirle"
+                android:textAllCaps="false"
+                android:textColor="@color/text_secondary" />
         </LinearLayout>
     </ScrollView>
 
-    <!-- ODAKLANMA MODU (Kilit aktif olduğunda görünecek panel; küçük ekranlarda kaydırılabilir) -->
+    <!-- ============================ ODAKLANMA MODU ============================ -->
     <ScrollView
         android:id="@+id/layoutLockContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:clipToPadding="false"
         android:fillViewport="true"
+        android:paddingHorizontal="20dp"
+        android:paddingTop="24dp"
+        android:paddingBottom="24dp"
         android:visibility="gone">
 
         <LinearLayout
@@ -192,69 +278,115 @@
                 android:id="@+id/tvCountdownLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:textColor="#9E9E9E"
-                android:textSize="14sp" />
+                android:letterSpacing="0.08"
+                android:text="ODAK MODU"
+                android:textColor="@color/accent"
+                android:textSize="13sp"
+                android:textStyle="bold" />
 
-            <FrameLayout
-                android:layout_width="260dp"
-                android:layout_height="120dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="24dp"
-                android:background="@drawable/bg_countdown"
-                android:padding="8dp">
-
-                <TextView
-                    android:id="@+id/tvCountdown"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:fontFamily="monospace"
-                    android:gravity="center"
-                    android:text="00:00:00"
-                    android:textColor="#E53935"
-                    android:textSize="42sp"
-                    android:textStyle="bold" />
-            </FrameLayout>
-
-            <!-- Özlü söz alanı -->
+            <!-- Geri sayım -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="32dp"
-                android:background="@drawable/bg_quote"
-                android:gravity="center"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/bg_countdown"
+                android:gravity="center_horizontal"
                 android:orientation="vertical"
-                android:padding="20dp">
+                android:paddingHorizontal="24dp"
+                android:paddingTop="22dp"
+                android:paddingBottom="20dp">
 
                 <TextView
-                    android:id="@+id/tvQuote"
+                    android:id="@+id/tvCountdown"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:textColor="#121212"
-                    android:textSize="18sp" />
+                    android:fontFamily="monospace"
+                    android:text="00:00:00"
+                    android:textColor="@color/text_primary"
+                    android:textSize="48sp"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.progressindicator.LinearProgressIndicator
+                    android:id="@+id/progressLock"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:max="1000"
+                    app:indicatorColor="@color/accent"
+                    app:trackColor="@color/stroke"
+                    app:trackCornerRadius="4dp"
+                    app:trackThickness="6dp" />
+
+                <TextView
+                    android:id="@+id/tvLockEnds"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="13sp" />
             </LinearLayout>
+
+            <!-- Özlü söz (dokununca değişir) -->
+            <TextView
+                android:id="@+id/tvQuote"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:background="@drawable/bg_quote"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:lineSpacingExtra="4dp"
+                android:padding="20dp"
+                android:textColor="@color/text_primary"
+                android:textSize="16sp"
+                android:textStyle="italic" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:letterSpacing="0.08"
+                android:text="SERBEST UYGULAMALAR"
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp"
+                android:textStyle="bold" />
 
             <!-- İzin verilen (en fazla 6) uygulamalar -->
             <GridView
                 android:id="@+id/gvAllowedApps"
                 android:layout_width="match_parent"
-                android:layout_height="240dp"
-                android:layout_marginBottom="32dp"
-                android:gravity="center"
-                android:horizontalSpacing="16dp"
+                android:layout_height="230dp"
+                android:layout_marginBottom="16dp"
+                android:horizontalSpacing="12dp"
+                android:listSelector="@android:color/transparent"
                 android:numColumns="3"
+                android:overScrollMode="never"
                 android:stretchMode="columnWidth"
-                android:verticalSpacing="16dp" />
+                android:verticalSpacing="12dp" />
 
-            <Button
+            <TextView
+                android:id="@+id/tvNoApps"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:gravity="center"
+                android:text="Serbest uygulama seçilmedi. Şimdilik sadece odaklan!"
+                android:textColor="@color/text_secondary"
+                android:textSize="14sp"
+                android:visibility="gone" />
+
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnUnlock"
+                style="@style/Widget.Material3.Button.TextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:backgroundTint="#555555"
-                android:text="Zamanlayıcıyı Durdur"
-                android:textSize="12sp" />
+                android:text="Zamanlayıcıyı durdur"
+                android:textAllCaps="false"
+                android:textColor="@color/text_secondary"
+                android:textSize="13sp" />
         </LinearLayout>
     </ScrollView>
 
-</LinearLayout>
+</FrameLayout>

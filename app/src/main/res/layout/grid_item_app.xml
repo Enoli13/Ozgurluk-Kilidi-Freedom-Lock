@@ -5,14 +5,15 @@
     android:background="@drawable/bg_app_item"
     android:gravity="center"
     android:orientation="vertical"
-    android:padding="8dp">
+    android:paddingHorizontal="8dp"
+    android:paddingVertical="14dp">
 
     <ImageView
         android:id="@+id/ivAppIcon"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginBottom="4dp"
-        android:contentDescription="Uygulama Logosu" />
+        android:layout_width="52dp"
+        android:layout_height="52dp"
+        android:layout_marginBottom="8dp"
+        android:importantForAccessibility="no" />
 
     <TextView
         android:id="@+id/tvAppName"
@@ -21,6 +22,6 @@
         android:ellipsize="end"
         android:gravity="center"
         android:maxLines="1"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/text_primary"
         android:textSize="12sp" />
 </LinearLayout>

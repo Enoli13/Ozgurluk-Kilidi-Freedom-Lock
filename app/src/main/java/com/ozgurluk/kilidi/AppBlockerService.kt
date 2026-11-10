@@ -1,7 +1,11 @@
 package com.ozgurluk.kilidi
 
 import android.accessibilityservice.AccessibilityService
+import android.app.KeyguardManager
 import android.content.Intent
+import android.os.Handler
+import android.os.Looper
+import android.os.PowerManager
 import android.os.SystemClock
 import android.telecom.TelecomManager
 import android.util.Log
@@ -17,19 +21,66 @@ import android.view.inputmethod.InputMethodManager
  */
 class AppBlockerService : AccessibilityService() {
 
+    private val handler = Handler(Looper.getMainLooper())
     private var lastBounceAt = 0L
+
+    /** Ekranda en son öne gelen "gerçek" uygulama (klavye, bildirim paneli vb. hariç). */
+    private var foregroundPkg: String? = null
+
+    /**
+     * Pencere olayları yalnızca uygulama değişince gelir. Kilit saati başladığında yasaklı bir
+     * uygulama zaten açıksa hiçbir olay gelmez; bu denetleyici o durumu da yakalar.
+     */
+    private val watchdog = object : Runnable {
+        override fun run() {
+            foregroundPkg?.let { pkg ->
+                if (isUserLooking() && shouldBlock(pkg)) {
+                    Log.d(TAG, "Engellendi (zaten açıktı): $pkg")
+                    bringLockScreenToFront()
+                }
+            }
+            handler.postDelayed(this, WATCHDOG_INTERVAL_MS)
+        }
+    }
+
+    override fun onServiceConnected() {
+        super.onServiceConnected()
+        handler.removeCallbacks(watchdog)
+        handler.postDelayed(watchdog, WATCHDOG_INTERVAL_MS)
+    }
+
+    override fun onDestroy() {
+        handler.removeCallbacksAndMessages(null)
+        super.onDestroy()
+    }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
         if (event == null || event.eventType != AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) return
         val pkg = event.packageName?.toString() ?: return
+        val className = event.className?.toString()
 
-        if (pkg == packageName) return // kendi ekranımız
-        if (!LockSettings.isActive(this) || !LockSettings.isInLockWindow(this)) return
-        if (pkg in LockSettings.allowedApps(this)) return // gridde seçilen serbest uygulamalar
-        if (isHelperWindow(pkg, event.className?.toString())) return // klavye, izin diyalogları vb.
+        // Klavye, izin diyalogları, bildirim paneli gibi pencereler altta açık olan uygulamanın
+        // "parçası" sayılır: ne engellenir ne de ön plandaki uygulama bilgisini değiştirir.
+        if (isHelperWindow(pkg, className)) return
 
-        Log.d(TAG, "Engellendi: $pkg (${event.className})")
-        bringLockScreenToFront()
+        foregroundPkg = pkg
+        if (shouldBlock(pkg)) {
+            Log.d(TAG, "Engellendi: $pkg ($className)")
+            bringLockScreenToFront()
+        }
+    }
+
+    private fun shouldBlock(pkg: String): Boolean {
+        if (pkg == packageName) return false // kendi ekranımız
+        if (!LockSettings.isActive(this) || !LockSettings.isInLockWindow(this)) return false
+        return pkg !in LockSettings.allowedApps(this) // gridde seçilen serbest uygulamalar
+    }
+
+    /** Ekran kapalıyken ya da telefon kilitliyken kilit ekranını açmaya çalışma. */
+    private fun isUserLooking(): Boolean {
+        val interactive = getSystemService(PowerManager::class.java)?.isInteractive ?: true
+        val keyguardLocked = getSystemService(KeyguardManager::class.java)?.isKeyguardLocked ?: false
+        return interactive && !keyguardLocked
     }
 
     /**
@@ -71,7 +122,11 @@ class AppBlockerService : AccessibilityService() {
                 Intent.FLAG_ACTIVITY_CLEAR_TOP or
                 Intent.FLAG_ACTIVITY_SINGLE_TOP
         )
-        startActivity(lockIntent)
+        try {
+            startActivity(lockIntent)
+        } catch (e: Exception) {
+            Log.w(TAG, "Kilit ekranı açılamadı", e)
+        }
     }
 
     override fun onInterrupt() {}
@@ -79,6 +134,7 @@ class AppBlockerService : AccessibilityService() {
     private companion object {
         const val TAG = "OzgurlukKilidi"
         const val BOUNCE_DEBOUNCE_MS = 400L
+        const val WATCHDOG_INTERVAL_MS = 2_000L
 
         /**
          * Kilit sırasında da çalışması gereken sistem yardımcıları.
