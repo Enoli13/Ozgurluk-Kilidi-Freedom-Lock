@@ -1,18 +1,14 @@
-## Özgürlük Kilidi v1.04
+## Özgürlük Kilidi v1.05
 
-### Düzeltmeler
-- Kilit şifresi kaynak koddan kaldırıldı; artık uygulama içinde belirleniyor ve cihazda tuzlu SHA-256 özeti olarak saklanıyor
-- Hatalı şifre denemeleri sınırlandı (3 hatadan sonra 30 sn bekleme)
-- Kilit başladığında zaten açık olan yasaklı uygulama artık birkaç saniye içinde engelleniyor
-- Kilit ekranında Geri tuşunun yol açtığı titreme giderildi
+### Yenilik
+- Odak modunu erken durdurmak artık 4 aşamalı: "Emin misin?", "Gerçekten emin misin?", "Ya düşündüm de, son kararın mı?" ve "Tamam, bak bu son ekran." Her ekranda şifre yeniden isteniyor.
+- Herhangi bir aşamada şifre yanlış girilirse ya da "Vazgeç" denirse süreç baştan başlıyor (3 hatalı denemede 30 sn bekleme devam ediyor).
+- Son ekranda şifre girilince kilit kapanıyor ve uygulama kapanıyor.
 
-### Yenilikler
-- Material 3 koyu tema ve kart tabanlı yeni arayüz
-- Geri sayıma ilerleme çubuğu ve bitiş saati
-- İzin durumları, seçili uygulamalar ve zamanlama özeti ana ekranda
-- Erişilebilirlik servisi kapanırsa uyarı
-- Aktif etmeden önce onay ekranı
-- Özlü söze dokununca yenisi geliyor
+### v1.04'ten beri gelenler
+- Uygulama içinde belirlenen ve cihazda özet olarak saklanan kilit şifresi
+- Kilit başladığında açık olan yasaklı uygulamanın da engellenmesi
+- Material 3 koyu tema, ilerleme çubuğu, izin durumu ve servis uyarıları
 
 ### Kurulum
-APK'yı indirip kur. Önceki bir sürüm farklı bir anahtarla imzalandıysa önce eskisini kaldırman gerekir.
+APK'yı indirip kur. Önceki sürüm farklı bir anahtarla imzalandıysa önce eskisini kaldırman gerekir.

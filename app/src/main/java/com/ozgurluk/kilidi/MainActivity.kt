@@ -100,6 +100,16 @@ class MainActivity : AppCompatActivity() {
         "Dikkatini nereye verirsen, hayatın oraya akar."
     )
 
+    private companion object {
+        /** Erken durdurma ekranları: (başlık, mesaj). Her biri şifreyi yeniden ister. */
+        val STOP_STEPS = listOf(
+            "Emin misin?" to "Odak modunu erken bitirmek üzeresin. Devam etmek için şifreni gir.",
+            "Gerçekten emin misin?" to "Biraz daha dayanabilirsin. Yine de bitirmek istiyorsan şifreni tekrar gir.",
+            "Ya düşündüm de, son kararın mı?" to "Bu süreyi kendin belirlemiştin. Hâlâ bitirmek istiyorsan şifreni bir kez daha gir.",
+            "Tamam, bak bu son ekran." to "Şifreyi son kez girersen kilit kapanacak ve uygulama kapanacak."
+        )
+    }
+
     private val dayShortNames = mapOf(
         Calendar.MONDAY to "Pzt", Calendar.TUESDAY to "Sal", Calendar.WEDNESDAY to "Çar",
         Calendar.THURSDAY to "Per", Calendar.FRIDAY to "Cum", Calendar.SATURDAY to "Cmt",
@@ -415,33 +425,49 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
+        askStopStep(0)
+    }
+
+    /**
+     * Erken durdurma 4 aşamalıdır; her aşamada şifre yeniden istenir. Herhangi bir aşamada
+     * şifre yanlışsa ya da "Vazgeç" denirse süreç iptal olur ve baştan başlamak gerekir.
+     */
+    private fun askStopStep(step: Int) {
+        if (step >= STOP_STEPS.size) {
+            LockSettings.resetFailedAttempts(this)
+            stopTimer(closeApp = true)
+            return
+        }
+        val (title, message) = STOP_STEPS[step]
         val input = passwordField("Kilit şifresi")
         MaterialAlertDialogBuilder(this)
-            .setTitle("Sistem Koruması")
-            .setMessage("Odak modunu erken sonlandırmak için şifreni gir:")
+            .setTitle(title)
+            .setMessage("$message\n\n(${step + 1}/${STOP_STEPS.size})")
             .setView(wrap(input))
-            .setPositiveButton("Doğrula") { _, _ ->
+            .setPositiveButton(if (step == STOP_STEPS.lastIndex) "Kilidi kapat" else "Devam") { _, _ ->
                 if (LockSettings.checkPassword(this, input.text.toString())) {
-                    LockSettings.resetFailedAttempts(this)
-                    stopTimer()
+                    askStopStep(step + 1)
                 } else {
                     val left = LockSettings.registerFailedAttempt(this)
                     if (left == 0) {
                         toast("Hatalı şifre! 30 saniye beklemen gerekiyor.", long = true)
                     } else {
-                        toast("Hatalı şifre! Kalan deneme: $left", long = true)
+                        toast("Hatalı şifre! Baştan başlaman gerekiyor. Kalan deneme: $left", long = true)
                     }
                 }
             }
-            .setNegativeButton("İptal", null)
+            .setNegativeButton("Vazgeç") { _, _ ->
+                toast("Harika karar! Odaklanmaya devam.")
+            }
             .setCancelable(false)
             .show()
     }
 
-    private fun stopTimer() {
+    private fun stopTimer(closeApp: Boolean = false) {
         LockSettings.setActive(this, false)
         render()
         toast("Odak modu kapatıldı.")
+        if (closeApp && !isFinishing) finishAndRemoveTask()
     }
 
     // ---- Şifre ----------------------------------------------------------------------------------

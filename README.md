@@ -60,7 +60,7 @@ APK `app/build/outputs/apk/debug/` klasöründe oluşur. Dosyayı telefonuna akt
 
 Kilidi erken durdurmak için kullanılan şifre artık kaynak kodda **değil**. Zamanlayıcıyı ilk kez aktif ederken uygulama senden bir şifre belirlemeni ister; şifre telefonda yalnızca tuzlu SHA-256 özeti olarak saklanır. Zamanlayıcı kapalıyken **Kilit şifresini değiştir** düğmesiyle değiştirebilirsin.
 
-Art arda 3 hatalı denemeden sonra 30 saniye beklemen gerekir.
+Erken durdurmak 4 aşamalıdır ("Emin misin?" → "Gerçekten emin misin?" → "Ya düşündüm de, son kararın mı?" → "Tamam, bak bu son ekran.") ve her aşamada şifre yeniden istenir. Yanlış şifre süreci baştan başlatır; art arda 3 hatalı denemeden sonra 30 saniye beklemen gerekir.
 
 ### 3. İzinleri ver
 
@@ -162,7 +162,7 @@ The APK is created in `app/build/outputs/apk/debug/`. Copy it to your phone and 
 
 The password used to stop the lock early is **no longer** in the source code. The first time you activate the timer, the app asks you to set one; it is stored on the device only as a salted SHA-256 hash. You can change it with **Change lock password** while the timer is off.
 
-After 3 wrong attempts in a row you have to wait 30 seconds.
+Stopping early takes 4 confirmation screens, each asking for the password again. A wrong password restarts the process; after 3 wrong attempts in a row you have to wait 30 seconds.
 
 ### 3. Grant permissions
 

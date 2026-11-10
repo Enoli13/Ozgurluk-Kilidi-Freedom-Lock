@@ -12,8 +12,8 @@ android {
         applicationId = "com.ozgurluk.kilidi"
         minSdk = 29
         targetSdk = 37
-        versionCode = 4
-        versionName = "1.04"
+        versionCode = 5
+        versionName = "1.05"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
